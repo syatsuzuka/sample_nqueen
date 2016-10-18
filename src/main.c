@@ -1,9 +1,12 @@
 /**************************************************************
+ * FILE: main.c
+ * DESC: solve N Queen Problem
  *
+ * AUTHOR: S.Yatsuzuka
  *
  * ***********************************************************/
 
-/*======= Preprocessor =======*/
+//======= Preprocessor =======
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,33 +15,44 @@
 #define B 1
 
 
-/*======= Proto Type =======*/
+//======= Proto Type =======
 
-void init (int max, int seed);
-double urand(int seed);
+void init (int max);
+void disp (void);
+double urand(void);
 int dU(int i, int j);
 
 
-/*======= Global Variables =======*/
+//======= Global Variables =======
 
-int conf, diag, row, length, UNIT, max, sum_column, sum_row, diagonal1, diagonal2, C;
+int ng_pt;			// diagnosis points
+int	max;			// max size for matrix
+int	C;				// Coeff for Hill-Criming term
+int sum_column;		// total num in one column
+int sum_row;		// total num in one row
+int sum_diag1;		// total num in diagonal
+int sum_diag2;		// total num in diagonal
 
-int V[101][101];
-int U[101][101];
+int V[100][100];	// voltage vector
+int U[100][100];	// input vector
+
 
 /**************************************************************
- *
+ * FUNC: main
+ * DESC: main function
  *
  * ***********************************************************/
 
 int main(){
 
-	/*======= Variables =======*/
+
+	//======= Variables =======
 
 	int t, i, j;
 	int seed;
 
-	/*======= Get Parameters =======*/
+
+	//======= Get Parameters =======
 
 	printf("Please input problem size. (4_100)");
 	scanf("%d", &max);
@@ -46,82 +60,99 @@ int main(){
 	scanf("%d", &seed);
 
 
-	/*======= Initialization =======*/
+	//======= Initialization =======
 
-	init(max, seed);
+	srand(seed);
+	init(max);
 
 	t = 0;
-	diag = 1;
+	ng_pt = 1;
 	C = 1;
 
 
-	/*======= Start =======*/
+	//======= Start =======
 
-	while ( diag > 0 && t < 1000){
+	while ( ng_pt > 0 && t < 1000){
 
-		diag = 0;
+		ng_pt = 0;
 		
-		for ( i = 1; i <= max; i++ ){
+		for ( i = 0; i < max; i++ ){
+			for ( j = 0; j < max; j++){
 
-			for ( j = 1; j <= max; j++){
+
+				//======= Update Input Vector =======
 
 				U[i][j] = U[i][j] + dU(i, j);
 				
 				if ( U[i][j] > 15) U[i][j] = 15;
 				if ( U[i][j] < -15) U[i][j] = -15;
 
+
+				//======= Calculate Voltage Vector =======
+				
 				if ( U[i][j] > 0) V[i][j] = 1;
 				else V[i][j] = 0;
 
 	
-				conf = 1;
-				if (sum_column + sum_row == 2
-					&& diagonal1 < 2
-					&& diagonal2 < 2)
-					conf = 0;
-
-				diag += conf;
+				if (sum_column != 1
+					|| sum_row != 1
+					|| sum_diag1 >= 2
+					|| sum_diag2 >= 2)
+					ng_pt++;
 			}
 		}
 
+		printf (
+			"\n\n(t	= %4d, ng_pt = %2d)\n\n", 
+			t, 
+			ng_pt
+		);
+		
+		disp();
+
 		t++;
+
+		//======= Update Coeff for Hill-crimbing =======
+		
 		if ( t % 20 < 5) C = 4;
 		else C = 1;
 	}
 
 
-	/*======= Display output =======*/
+	/*======= End Message =======*/
 
-	printf ("\n");
-	
-	for ( i = 1; i <= max; i++){
-		for ( j = 1; j <= max; j++){
-			printf("%d ", V[i][j]);
-		}
-		printf("\n");
-	}
+	if ( ng_pt == 0 )
 
-	printf("\n\n");
-	printf("Solved\a diag=%d t=%d\n", diag, t);
+		printf(
+			"Solved!\a (t=%d)\n", 
+			t-1
+		);
+	else
+		printf("Unsolved (ng_pt=%d)\n",
+			ng_pt
+		);
 }
 
 
 /**************************************************************
- *  
+ * FUNC: init
+ * DESC: initialize the matrix using rand func
  *   
  * ***********************************************************/
 
-void init(int max, int seed){
+void init(int max){
+
 	
 	/*======= Variables =======*/
 
 	int i, j, x;
 
+
 	/*======= Initialization =======*/
 
-	for ( i = 1; i <= max; i++){
-		for ( j = 1; j <= max; j++){
-			x = (int)((double)20 * urand(seed));
+	for ( i = 0; i < max; i++){
+		for ( j = 0; j < max; j++){
+			x = (int)((double)20 * urand());
 			U[i][j] = x - 10;
 
 			if ( U[i][j] < 0 ) V[i][j] = 1;
@@ -130,95 +161,152 @@ void init(int max, int seed){
 	}
 }
 
+
 /**************************************************************
- *  
+ * FUNC: disp
+ * DESC: display the value in matrix data
  *   
  * ***********************************************************/
 
-double urand(int seed){
+void disp(void){
+
+
+	//======= Variables =======
+
+	int i, j;
+
+
+	//======= Display Input Vector =======
 	
-	/*======= Variables =======*/
+	printf("<Input Vector>\n");
+	
+    for ( i = 0; i < max; i++){
+        for ( j = 0; j < max; j++){
+            printf("%2d\t", U[i][j]);
+        }
+        printf("\n");
+    }
+
+	printf("\n\n");
+
+
+	//======= Display Volage Vector =======
+	
+	printf("<Voltage Vector>\n");
+
+    for ( i = 0; i < max; i++){
+        for ( j = 0; j < max; j++){
+            printf("%d ", V[i][j]);
+        }
+        printf("\n");
+    }
+
+    printf("\n\n");
+}
+
+
+/**************************************************************
+ * FUNC: urand
+ * DESC: return the uniformed random values
+ *   
+ * ***********************************************************/
+
+double urand(void){
+	
+	//======= Variables =======
 
 	int i;
 
-	/*======= Initialization =======*/
-	srand(seed);
+
+	//======= Return uniformed random value =======
 	
 	return ((double)rand()+1.0)/((double)RAND_MAX+2.0);
 }
 
 
 /**************************************************************
- *  
+ * FUNC: dU
+ * DESC: adjust input vector
  *   
  * ***********************************************************/
 
 int dU(int i, int j){
 
-	/*======= Variables =======*/
+
+	//======= Variables =======
 
 	int k, du, h, C;
 
 
+	//======= Reset values =======
+	
 	C = 1;
-
 	sum_column = 0;
 	sum_row = 0;
 
 
-	/*======= Check.1 =======*/
+	//======= Check the total num in column and row =======
 
-	for ( k = 1; k <= max; k++){
+	for ( k = 0; k < max; k++){
 		sum_row = sum_row + V[i][k];
 		sum_column = sum_column + V[k][j];
 	}
 
 
-	/*======= Check.2 =======*/
+	//======= Check the total num in diagonal.1 =======
 
-	diagonal1 = 0;
+	sum_diag1 = 0;
 	k = 1;
 
-	while((j+k) <= max && (i-k) >= 1){
+	while((j+k) < max && (i-k) >= 0){
 
-		diagonal1 = diagonal1 + V[i-k][j+k];
+		sum_diag1 = sum_diag1 + V[i-k][j+k];
 		k++;
 	}
 
 	k = 1;
 
-	while((j-k) >= 1 && (i+k) <= max){
-		diagonal1 = diagonal1 + V[i+k][j-k];
+	while((j-k) >= 0 && (i+k) < max){
+		sum_diag1 = sum_diag1 + V[i+k][j-k];
 		k++;
 	}
 
-	diagonal2 = 0;
+
+	//======= Check the total num in diagonal.2 =======
+
+	sum_diag2 = 0;
 	k = 1;
 
-	while((j+k) <= max && (i+k) <= max){
-		diagonal2 = diagonal2 + V[i+k][j+k];
+	while((j+k) < max && (i+k) < max){
+		sum_diag2 = sum_diag2 + V[i+k][j+k];
 		k++;
 	}
 
 	k = 1;
 
-	while((j-k) >= 1 && (i-k) >= 1){
-		diagonal2 = diagonal2 + V[i-k][j-k];
+	while((j-k) >= 0 && (i-k) >= 0){
+		sum_diag2 = sum_diag2 + V[i-k][j-k];
 		k++;
 	}
 
 
-	/*======= Define h func =======*/
+	//======= Calc the weight for Hill-Crimbing =======
 
 	h = 0;
 	if (sum_column == 0) h = 1;
 	if (sum_row == 0) h++;
 
 
-	/*======= Define dUij =======*/
+	//======= Define dUij =======
 
 	du = -A * (sum_row + sum_column - 2) 
-		-B * (diagonal1 + diagonal2) + C * h;
+		-B * (sum_diag1 + sum_diag2) + C * h;
+
+
+	//======= Logging =======
+
+	printf ("dU[%d][%d]	= %d, ", i, j, du);
+
 
 	return (du);
 
