@@ -43,21 +43,46 @@ int U[100][100];	// input vector
  *
  * ***********************************************************/
 
-int main(){
+int main(int argc, char *argv[]){
 
-
-	//======= Variables =======
-
+    //======= Variables =======
+    
 	int t, i, j;
 	int seed;
 
 
-	//======= Get Parameters =======
+	//======= Check the arguments =======
+	
+	if ( argc != 2 && argc != 3){
 
-	printf("Please input problem size. (4_100)");
-	scanf("%d", &max);
-	printf("Please input seed.");
-	scanf("%d", &seed);
+		fprintf(
+			stderr,
+			"\n%s <Matrix Size> [Seed Num for rand]\n"
+			"\n"
+			"\tMatrix Size: 4-100\n"
+			"\tSeed Num for rand: 10 by default"
+			"\n\n",
+			argv[0]
+		);
+
+		exit (1);
+	}
+
+
+
+	//======= Get Parameters =======
+	
+	max = atoi(argv[1]);
+
+	if ( argc == 2 )
+		seed = 10;
+	else
+		seed = atoi(argv[2]);
+
+
+	printf("PARAM: max	= %d\n", max);
+	printf("PARAM: seed = %d\n", seed);
+	printf("\n");
 
 
 	//======= Initialization =======
@@ -124,7 +149,7 @@ int main(){
 	if ( ng_pt == 0 )
 
 		printf(
-			"Solved!\a (t=%d)\n", 
+			"Solved! (t=%d)\n", 
 			t-1
 		);
 	else
