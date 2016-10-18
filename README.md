@@ -1,4 +1,5 @@
-# Sample code to solve N Queen Problem using RNN (Recurrent Neural Network)
+# Sample code for RNN (Recurrent Neural Network)
+This is a sample code to solve N Queen Puzzle using RNN. You can read [[Wikipedia:https://en.wikipedia.org/wiki/Eight_queens_puzzle]] to know what N Queen Puzzle is. Here, I also included the calculation result not for 8 queens puzzle, but 100 queens puzzle.
 
 ## Prerequisite
 
