@@ -5,7 +5,7 @@ In order to compile GUI edition, you need to install
 ## Prerequisite
 
 * Install gcc
-* Install X11
+* Install X11 (for GUI edition)
 
 ## How To Use
 
@@ -17,15 +17,15 @@ Step.2) Compile source code to create executable.
 
  $ cd sample_nqueen/src
 
- $ gcc cui_main.c -o cui_main
+ $ make
 
- $ gcc gui_main.c -lX11 -o gui_main
+If you don't need GUI edition, you can execute the following command to create only CUI edition.
+
+ $ make cui_main
 
 Step.3) Run the executable file.
 
- $ cd src
+ $ ./cui_main \<Matrix Size\> [Seed Number for rand]
 
- $ ./cui_main <Matrix Size> [Seed Number for rand] > <output file>
-
- $ ./gui_main
+ $ ./gui_main \<Matrix Size\> [Seed Number for rand] 
 
