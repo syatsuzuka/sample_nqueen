@@ -1,2 +1,4 @@
 src/*.o
+src/cui_main
+src/gui_main
 bin/*

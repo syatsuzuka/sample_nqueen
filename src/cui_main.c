@@ -9,6 +9,7 @@
 //======= Preprocessor =======
 
 #include "common.h"
+#define VERSION "ver 0.1"
 
 
 /**************************************************************
@@ -31,8 +32,13 @@ int main(int argc, char *argv[]){
 
 		fprintf(
 			stderr,
-			"\n%s <Matrix Size> [Seed Num for rand]\n"
-			"\n"
+			"\nThis is a sample program to solve N Queen Puzzle using RNN (Recurrent Neural Network)\n\n"
+			"\n[VERSION]\n"
+			"\t"
+			VERSION
+			"\n\n[USAGE]\n"
+			"\t%s <Matrix Size> [Seed Num for rand]\n"
+			"\n[INPUT PARAMETERS]\n"
 			"\tMatrix Size: 4-100\n"
 			"\tSeed Num for rand: 10 by default"
 			"\n\n",
