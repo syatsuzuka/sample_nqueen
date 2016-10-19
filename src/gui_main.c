@@ -1,5 +1,5 @@
 /**************************************************************
- * FILE: main.c
+ * FILE: gui_main.c
  * DESC: solve N Queen Problem
  *
  * AUTHOR: S.Yatsuzuka
@@ -11,19 +11,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #define A 1
 #define B 1
 
 
 //======= Proto Type =======
+//----- Common -----
 
 void init (int max);
 void disp (void);
 double urand(void);
 int dU(int i, int j);
 
+//----- GUI -----
+
+void window(void);
+void put_frame(int max, int UNIT);
+void put_queen(int i, int j, int UNIT);
+
 
 //======= Global Variables =======
+//----- Common -----
 
 int ng_pt;			// diagnosis points
 int	max;			// max size for matrix
@@ -35,6 +45,15 @@ int sum_diag2;		// total num in diagonal
 
 int V[100][100];	// voltage vector
 int U[100][100];	// input vector
+
+//----- for GUI -----
+
+Display *d;
+Window w0;
+unsigned long black, white;
+XEvent e;
+GC gc;
+int UNIT;
 
 
 /**************************************************************
@@ -49,6 +68,7 @@ int main(int argc, char *argv[]){
     
 	int t, i, j;
 	int seed;
+	int prev;
 
 
 	//======= Check the arguments =======
@@ -85,6 +105,15 @@ int main(int argc, char *argv[]){
 	printf("\n");
 
 
+	//======= Display window =======
+	
+
+	window();
+	gc = XCreateGC (d, w0, 0, 0);
+	UNIT = 500/max;
+	put_frame(max, UNIT);
+
+
 	//======= Initialization =======
 
 	srand(seed);
@@ -112,11 +141,16 @@ int main(int argc, char *argv[]){
 				if ( U[i][j] > 15) U[i][j] = 15;
 				if ( U[i][j] < -15) U[i][j] = -15;
 
+				prev = V[i][j];
+
 
 				//======= Calculate Voltage Vector =======
 				
 				if ( U[i][j] > 0) V[i][j] = 1;
 				else V[i][j] = 0;
+
+				if (prev != V[i][j]) 
+					put_queen(i, j, UNIT);
 
 	
 				if (sum_column != 1
@@ -156,6 +190,9 @@ int main(int argc, char *argv[]){
 		printf("Unsolved (ng_pt=%d)\n",
 			ng_pt
 		);
+
+	getchar();
+	getchar();
 }
 
 
@@ -337,3 +374,124 @@ int dU(int i, int j){
 
 }
 
+
+/**************************************************************
+ * FUNC: window
+ * DESC: 
+ * 
+ * ***********************************************************/
+
+void window(void){
+	
+	d = XOpenDisplay(NULL);
+	black = BlackPixel(d, 0);
+	white = WhitePixel(d, 0);
+
+	w0 = XCreateSimpleWindow (
+		d,
+		RootWindow (d, 0),
+		100,
+		100,
+		600,
+		600,
+		2,
+		black,
+		white
+	);
+
+	XMapWindow (d, w0);
+	XFlush(d);
+	sleep(3);
+	gc = XCreateGC (d, w0, 0, 0);
+}
+
+/**************************************************************
+ * FUNC: put_frame
+ * DESC:
+ *
+ * ***********************************************************/
+
+void put_frame(int max, int UNIT){
+
+	int x, y;
+
+	XSetForeground (d, gc, black);
+
+	for(x = 0; x <= max; x++){
+
+		XDrawLine(
+			d, 
+			w0, 
+			gc, 
+			x * UNIT + 50, 
+			0 + 50, 
+			x * UNIT + 50,
+			UNIT * max + 50
+		);
+	}
+
+	for (y = 0; y <= max; y++){
+
+		XDrawLine (
+			d,
+			w0,
+			gc,
+			0+50,
+			y * UNIT + 50,
+			UNIT * max + 50,
+			y * UNIT + 50
+		);
+	}
+
+	XFlush (d);
+			
+}
+
+/**************************************************************
+ * FUNC: put_queen
+ * DESC:
+ *
+ * ***********************************************************/
+
+void put_queen(int i, int j, int UNIT){
+
+	if ( V[i][j] == 1 ){
+
+		XSetForeground (
+			d,
+			gc,
+			black
+		);
+
+		XFillRectangle(
+			d,
+			w0,
+			gc,
+			(j) * UNIT + 50,
+			(i) * UNIT + 50,
+			UNIT,
+			UNIT
+		);
+	}
+	else {
+	
+		XSetForeground (
+			d,
+			gc,
+			white
+		);
+
+		XFillRectangle(
+			d,
+			w0,
+			gc,
+			(j) * UNIT + 1 + 50,
+			(i) * UNIT + 1 + 50,
+			UNIT - 1,
+			UNIT - 1
+		);
+	}
+
+	XFlush (d);
+	XSync (d, 0);
+}
