@@ -17,7 +17,7 @@ all: cui_main gui_main
 cui_main: common.o cui_main.o
 	$(CC) -o cui_main common.o cui_main.o
 
-gui_main: gui_main.o
+gui_main: common.o gui_main.o
 	$(CC) -o gui_main common.o gui_main.o -lX11
 
 clean:
