@@ -12,6 +12,11 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
+#define WIN_SIZE 600
+#define WIN_OFFSET 100
+#define GRID_SIZE 500
+#define MARGIN 50
+
 
 //======= Proto Type =======
 

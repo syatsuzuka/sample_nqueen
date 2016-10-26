@@ -72,7 +72,7 @@ int main(int argc, char *argv[]){
 
 	window();
 	gc = XCreateGC (d, w0, 0, 0);
-	UNIT = 500/max;
+	UNIT = ( GRID_SIZE ) / max;
 	put_frame(max, UNIT);
 
 
@@ -166,6 +166,9 @@ int main(int argc, char *argv[]){
 
 void window(void){
 	
+
+	//======= Create Window object =======
+
 	d = XOpenDisplay(NULL);
 	black = BlackPixel(d, 0);
 	white = WhitePixel(d, 0);
@@ -173,10 +176,10 @@ void window(void){
 	w0 = XCreateSimpleWindow (
 		d,
 		RootWindow (d, 0),
-		100,
-		100,
-		600,
-		600,
+		WIN_OFFSET,
+		WIN_OFFSET,
+		WIN_SIZE,
+		WIN_SIZE,
 		2,
 		black,
 		white
@@ -196,9 +199,17 @@ void window(void){
 
 void put_frame(int max, int UNIT){
 
+	//======= Variables =======
+
 	int x, y;
 
+
+	//======= Set up color =======
+
 	XSetForeground (d, gc, black);
+
+
+	//======= Draw vertical line =======
 
 	for(x = 0; x <= max; x++){
 
@@ -206,12 +217,15 @@ void put_frame(int max, int UNIT){
 			d, 
 			w0, 
 			gc, 
-			x * UNIT + 50, 
-			0 + 50, 
-			x * UNIT + 50,
-			UNIT * max + 50
+			x * UNIT + MARGIN, 
+			0 + MARGIN, 
+			x * UNIT + MARGIN,
+			UNIT * max + MARGIN 
 		);
 	}
+
+
+	//======= Draw horizontal line =======
 
 	for (y = 0; y <= max; y++){
 
@@ -219,10 +233,10 @@ void put_frame(int max, int UNIT){
 			d,
 			w0,
 			gc,
-			0+50,
-			y * UNIT + 50,
-			UNIT * max + 50,
-			y * UNIT + 50
+			0 + MARGIN,
+			y * UNIT + MARGIN,
+			UNIT * max + MARGIN,
+			y * UNIT + MARGIN
 		);
 	}
 
@@ -238,6 +252,9 @@ void put_frame(int max, int UNIT){
 
 void put_queen(int i, int j, int UNIT){
 
+
+	//======= Fill a cell with black ( Put a Queen ) =======
+
 	if ( V[i][j] == 1 ){
 
 		XSetForeground (
@@ -250,12 +267,15 @@ void put_queen(int i, int j, int UNIT){
 			d,
 			w0,
 			gc,
-			(j) * UNIT + 50,
-			(i) * UNIT + 50,
+			(j) * UNIT + MARGIN,
+			(i) * UNIT + MARGIN,
 			UNIT,
 			UNIT
 		);
 	}
+
+	//======= Fill a cell with white =======
+
 	else {
 	
 		XSetForeground (
@@ -268,8 +288,8 @@ void put_queen(int i, int j, int UNIT){
 			d,
 			w0,
 			gc,
-			(j) * UNIT + 1 + 50,
-			(i) * UNIT + 1 + 50,
+			(j) * UNIT + 1 + MARGIN,
+			(i) * UNIT + 1 + MARGIN,
 			UNIT - 1,
 			UNIT - 1
 		);
