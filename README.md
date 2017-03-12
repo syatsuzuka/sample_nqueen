@@ -1,5 +1,5 @@
-# Sample code for RNN (Recurrent Neural Network)
-This is a sample code to solve N Queen Puzzle using RNN. You can read [Wikipedia - Eight Queens Puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle) to know what N Queen Puzzle is. Here, I also included the calculation result not for 8 queens puzzle, but 100 queens puzzle, and you can see the demo from [Youtube](https://youtu.be/vjqxFXPdiHY).
+# Sample code for Neural Network
+This is a sample code to solve N Queen Puzzle using neural network. You can read [Wikipedia - Eight Queens Puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle) to know what N Queen Puzzle is. Here, I also included the calculation result not for 8 queens puzzle, but 100 queens puzzle, and you can see the demo from [Youtube](https://youtu.be/vjqxFXPdiHY).
 
 In order to compile GUI edition, you need to install X11 library.
 
